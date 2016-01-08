@@ -1,1 +1,2 @@
-A simple Scheme interpreter.
+# Charon
+A Scheme interpreter in Python.
