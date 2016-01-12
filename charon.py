@@ -42,7 +42,20 @@ def atom(token):
 ###############
 # Environment #
 ###############
-Env = dict
+class Procedure(object):
+    def __init__(self, parms, body, env):
+        self.parms, self.body, self.env = parms, body, env
+
+    def __call__(self, *args):
+        return eval(self.body, Env(self.parms, args, self.env))
+
+class Env(dict):
+    def __init__(self, parms=(), args=(), outer=None):
+        self.update(zip(parms, args))
+        self.outer = outer
+
+    def find(self, var):
+        return self if (var in self) else self.outer.find(var)
 
 def standard_env():
     import math, operator
@@ -88,7 +101,7 @@ global_env = standard_env()
 ###############
 def eval(x, env=global_env):
     if isinstance(x, Symbol):
-        return env[x]
+        return env.find(x)[x]
     elif not isinstance(x, List):
         return x
     elif x[0] == 'quote':
@@ -97,13 +110,19 @@ def eval(x, env=global_env):
     elif x[0] == 'if':
         (_, test, conseq, alt) = x
         exp = (conseq if eval(test, env) else alt)
-        return exp
+        return eval(exp, env)
     elif x[0] == 'define':
         (_, var, exp) = x
         env[var] = eval(exp, env)
+    elif x[0] == 'set!':
+        (_, var, exp) = x
+        env.find(var)[var] = eval(exp, env)
+    elif x[0] == 'lambda':
+        (_, parms, body) = x
+        return Procedure(parms, body, env)
     else:
         proc = eval(x[0], env)
-        args = [eval(arg, env) for arg in x[1:]]
+        args = [eval(exp, env) for exp in x[1:]]
         return proc(*args)
 
 ##############
