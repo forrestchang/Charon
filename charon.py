@@ -50,7 +50,8 @@ class Procedure(object):
         return eval(self.body, Env(self.parms, args, self.env))
 
 class Env(dict):
-    def __init__(self, parms=(), args=(), outer=None):
+    def __init__(self, parms=(), args=(), outer=None, **kwargs):
+        super(Env, self).__init__(**kwargs)
         self.update(zip(parms, args))
         self.outer = outer
 
