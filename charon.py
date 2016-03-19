@@ -1,6 +1,8 @@
 ###############
 # Lexer       #
 ###############
+
+
 def lexer(text):
     return text.replace('(', ' ( ').replace(')', ' ) ').split()
 
@@ -11,8 +13,10 @@ Symbol = str
 List = list
 Number = (int, float)
 
+
 def parser(program):
     return read_from_tokens(lexer(program))
+
 
 def read_from_tokens(tokens):
     if len(tokens) == 0:
@@ -30,6 +34,7 @@ def read_from_tokens(tokens):
     else:
         return atom(token)
 
+
 def atom(token):
     try:
         return int(token)
@@ -42,12 +47,15 @@ def atom(token):
 ###############
 # Environment #
 ###############
+
+
 class Procedure(object):
     def __init__(self, parms, body, env):
         self.parms, self.body, self.env = parms, body, env
 
     def __call__(self, *args):
         return eval(self.body, Env(self.parms, args, self.env))
+
 
 class Env(dict):
     def __init__(self, parms=(), args=(), outer=None, **kwargs):
@@ -58,8 +66,10 @@ class Env(dict):
     def find(self, var):
         return self if (var in self) else self.outer.find(var)
 
+
 def standard_env():
-    import math, operator
+    import math
+    import operator
     from functools import reduce
     env = Env()
     env.update(vars(math))
@@ -100,6 +110,8 @@ global_env = standard_env()
 ###############
 # Evaluation  #
 ###############
+
+
 def eval(x, env=global_env):
     if isinstance(x, Symbol):
         return env.find(x)[x]
@@ -129,6 +141,8 @@ def eval(x, env=global_env):
 ##############
 # REPL       #
 ##############
+
+
 def repl():
     while True:
         try:
@@ -145,6 +159,8 @@ def repl():
 #############
 # Test      #
 #############
+
+
 def main():
     repl()
 
