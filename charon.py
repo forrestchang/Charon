@@ -6,6 +6,7 @@
 def lexer(text):
     return text.replace('(', ' ( ').replace(')', ' ) ').split()
 
+
 ##############
 # Parser     #
 ##############
@@ -105,6 +106,7 @@ def standard_env():
                 })
     return env
 
+
 global_env = standard_env()
 
 ###############
@@ -163,6 +165,7 @@ def repl():
 
 def main():
     repl()
+
 
 if __name__ == '__main__':
     main()
